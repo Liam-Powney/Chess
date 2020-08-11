@@ -11,9 +11,12 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private Texture2D boardTileLight;
-        private Texture2D boardTileDark;
+
         Board board = new Board();
+        Rook w_Rook1 = new Rook(0, 7, true);
+        Rook w_Rook2 = new Rook(7, 7, true);
+        Rook b_Rook1 = new Rook(0, 0, false);
+        Rook b_Rook2 = new Rook(7,0, false);
 
 
         public Game1()
@@ -48,9 +51,13 @@ namespace Game1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            //boardTileLight = Content.Load<Texture2D>("square_light");
-            //boardTileDark = Content.Load<Texture2D>("square_dark");
-            board.LoadContent(Content.Load<Texture2D>("square_dark"), Content.Load<Texture2D>("square_light"));
+            board.LoadBoard(Content.Load<Texture2D>("square_dark"), Content.Load<Texture2D>("square_light"));
+            //w_Rook1.LoadPiece(Content.Load<Texture2D>("w_Rook"));
+            //w_Rook2.LoadPiece(Content.Load<Texture2D>("w_Rook"));
+            //b_Rook1.LoadPiece(Content.Load<Texture2D>("b_Rook"));
+            //b_Rook2.LoadPiece(Content.Load<Texture2D>("b_Rook"));
+
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -91,7 +98,11 @@ namespace Game1
 
             spriteBatch.Begin();
 
-            board.Draw(spriteBatch);
+            board.DrawBoard(spriteBatch);
+            //w_Rook1.DrawPiece(spriteBatch);
+            //w_Rook2.DrawPiece(spriteBatch);
+            //b_Rook1.DrawPiece(spriteBatch);
+            //b_Rook2.DrawPiece(spriteBatch);
 
             spriteBatch.End();
 
