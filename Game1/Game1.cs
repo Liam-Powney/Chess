@@ -15,7 +15,10 @@ namespace Game1
         SpriteBatch spriteBatch;
 
         Board board = new Board();
-        List<ChessPiece> currentPieces = new List<ChessPiece>();
+        public static bool whitesTurn;
+        public static List<ChessPiece> currentPieces = new List<ChessPiece>();
+        //Board board = new Board();
+        
 
         
 
@@ -55,7 +58,13 @@ namespace Game1
             
             // TODO: use this.Content to load your game content here
 
+            //load board and create and load new pieces
             board.LoadBoard(Content, true);
+            board.setupGame(currentPieces);
+            foreach(ChessPiece piece in currentPieces)
+            {
+                piece.LoadPiece(Content, piece);
+            }
 
 
         }
@@ -100,8 +109,12 @@ namespace Game1
 
             spriteBatch.Begin();
 
+            //draw board and pieces
             board.DrawBoard(spriteBatch);
-            board.setupGame(spriteBatch, currentPieces);
+            foreach(ChessPiece piece in currentPieces)
+            {
+                piece.DrawPiece(spriteBatch, piece);
+            }
 
             spriteBatch.End();
 
