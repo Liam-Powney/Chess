@@ -14,11 +14,12 @@ namespace Game1
         public bool isWhite;
         public Texture2D pieceTexture;
         
-        public ChessPiece(int x, int y, bool white)
+        public ChessPiece(int x, int y, bool white, List<ChessPiece> pieceList)
         {
             this.xPos = x;
             this.yPos = y;
             this.isWhite = white;
+            pieceList.Add(this);
         }
 
         public void LoadPiece(ContentManager c, ChessPiece piece)
@@ -99,48 +100,48 @@ namespace Game1
 
     public class Rook : ChessPiece
     {
-        public Rook(int x, int y, bool white)
-            : base(x, y, white)
+        public Rook(int x, int y, bool white, List<ChessPiece> pieceList)
+            : base(x, y, white, pieceList)
         {
         }
     }
 
     public class Knight : ChessPiece
     {
-        public Knight(int x, int y, bool white)
-            : base(x, y, white)
+        public Knight(int x, int y, bool white, List<ChessPiece> pieceList)
+            : base(x, y, white, pieceList)
         {
         }
     }
 
     public class Bishop : ChessPiece
     {
-        public Bishop(int x, int y, bool white)
-            : base(x, y, white)
+        public Bishop(int x, int y, bool white, List<ChessPiece> pieceList)
+            : base(x, y, white, pieceList)
         {
         }
     }
 
     public class King : ChessPiece
     {
-        public King(int x, int y, bool white)
-            : base(x, y, white)
+        public King(int x, int y, bool white, List<ChessPiece> pieceList)
+            : base(x, y, white, pieceList)
         {
         }
     }
 
     public class Queen : ChessPiece
     {
-        public Queen(int x, int y, bool white)
-            : base(x, y, white)
+        public Queen(int x, int y, bool white, List<ChessPiece> pieceList)
+            : base(x, y, white, pieceList)
         {
         }
     }
 
     public class Pawn : ChessPiece
     {
-        public Pawn(int x, int y, bool white)
-            : base(x, y, white)
+        public Pawn(int x, int y, bool white, List<ChessPiece> pieceList)
+            : base(x, y, white, pieceList)
         {
         }
     }
