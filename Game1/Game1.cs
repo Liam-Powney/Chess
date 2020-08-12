@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Game1
 {
@@ -9,14 +10,14 @@ namespace Game1
     /// </summary>
     public class Game1 : Game
     {
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
         Board board = new Board();
-        Rook w_Rook1 = new Rook(0, 7, true);
-        Rook w_Rook2 = new Rook(7, 7, true);
-        Rook b_Rook1 = new Rook(0, 0, false);
-        Rook b_Rook2 = new Rook(7,0, false);
+        List<ChessPiece> currentPieces = new List<ChessPiece>();
+
+        
 
 
         public Game1()
@@ -51,15 +52,12 @@ namespace Game1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            board.LoadBoard(Content.Load<Texture2D>("square_dark"), Content.Load<Texture2D>("square_light"));
-            //w_Rook1.LoadPiece(Content.Load<Texture2D>("w_Rook"));
-            //w_Rook2.LoadPiece(Content.Load<Texture2D>("w_Rook"));
-            //b_Rook1.LoadPiece(Content.Load<Texture2D>("b_Rook"));
-            //b_Rook2.LoadPiece(Content.Load<Texture2D>("b_Rook"));
-
-
-
+            
             // TODO: use this.Content to load your game content here
+
+            board.LoadBoard(Content, true);
+
+
         }
 
         /// <summary>
@@ -83,6 +81,10 @@ namespace Game1
 
             // TODO: Add your update logic here
 
+
+
+
+
             base.Update(gameTime);
         }
 
@@ -99,10 +101,7 @@ namespace Game1
             spriteBatch.Begin();
 
             board.DrawBoard(spriteBatch);
-            //w_Rook1.DrawPiece(spriteBatch);
-            //w_Rook2.DrawPiece(spriteBatch);
-            //b_Rook1.DrawPiece(spriteBatch);
-            //b_Rook2.DrawPiece(spriteBatch);
+            board.setupGame(spriteBatch, currentPieces);
 
             spriteBatch.End();
 

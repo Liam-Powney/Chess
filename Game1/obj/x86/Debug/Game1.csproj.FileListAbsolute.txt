@@ -56,3 +56,6 @@ C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Wi
 C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\SharpDX.Direct2D1.xml
 C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\SharpDX.XInput.xml
 C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\obj\x86\Debug\Game1.csprojResolveAssemblyReference.cache
+C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\Content\square_ brown_dark.xnb
+C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\Content\square_brown_light.xnb
+C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\Content\square_brown_dark.xnb

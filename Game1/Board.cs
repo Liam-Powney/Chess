@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 
 namespace Game1
@@ -10,7 +12,6 @@ namespace Game1
 
         private const int TILE_SIZE = 128;
 
-        public static List<ChessPiece> startingPieces = new List<ChessPiece>();
         private int[,] boardArray = new int[8, 8];
 
         private Texture2D boardTileLight;
@@ -18,10 +19,18 @@ namespace Game1
 
 
         //loads the light and dark board tile textures
-        public void LoadBoard(Texture2D lightSquare, Texture2D darkSquare)
+        public void LoadBoard(ContentManager c, bool theme)
         {
-            this.boardTileLight = lightSquare;
-            this.boardTileDark = darkSquare;
+            if (theme == true)
+            {
+                this.boardTileLight = c.Load<Texture2D>("square_light");
+                this.boardTileDark = c.Load<Texture2D>("square_dark");
+            }
+            else
+            {
+                this.boardTileLight = c.Load<Texture2D>("square_brown_light");
+                this.boardTileDark = c.Load<Texture2D>("square_brown_dark");
+            }
 
         }
         
@@ -45,17 +54,22 @@ namespace Game1
         }
 
         //sets the board up for a new game including piece placement
-        public void setup(SpriteBatch spriteBatch)
+        public void setupGame(SpriteBatch spriteBatch, List<ChessPiece> currentPieces)
         {
-            // need to unload all pieces still on board 
-            startingPieces.Clear();
+            currentPieces.Clear();
 
-            startingPieces[0] = new Rook(0, 8, true);
-            startingPieces[1] = new Rook(8, 8, true);
+            Rook whiteRook1 = new Rook(0, 7, true);
+            Rook whiteRook2 = new Rook(7, 7, true);
+            Rook blackRook1 = new Rook(0, 0, false);
+            Rook blackRook2 = new Rook(7, 0, false);
+            currentPieces.Add(whiteRook1);
+            currentPieces.Add(whiteRook2);
+            currentPieces.Add(blackRook1);
+            currentPieces.Add(blackRook2);
 
-            foreach(ChessPiece piece in startingPieces)
+            foreach(ChessPiece piece in currentPieces)
             {
-                piece.DrawPiece(spriteBatch);
+                piece.DrawPiece(spriteBatch, piece.pieceTexture); //this will work once I generalise DrawRook() to DrawPiece() :)
             }
         }
     }
