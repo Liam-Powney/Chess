@@ -21,7 +21,8 @@ namespace Game1
             this.isWhite = white;
             pieceList.Add(this);
         }
-
+        
+        // Loads the correct texture for a piece
         public void LoadPiece(ContentManager c, ChessPiece piece)
         {
             if (piece is Rook == true)
@@ -92,12 +93,18 @@ namespace Game1
             }
         }
 
+        // Draws the piece
         public void DrawPiece(SpriteBatch spriteBatch, ChessPiece piece)
         {
             spriteBatch.Draw(piece.pieceTexture, new Rectangle(xPos * 128, yPos * 128, 128, 128), Color.White);
         }
     }
 
+
+    ////////////////////
+    // Types of Pieces//
+    ////////////////////
+  
     public class Rook : ChessPiece
     {
         public Rook(int x, int y, bool white, List<ChessPiece> pieceList)
