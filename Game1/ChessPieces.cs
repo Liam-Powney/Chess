@@ -9,95 +9,109 @@ namespace Game1
 
     public class ChessPiece
     {
-        public int xPos;
-        public int yPos;
+        public const int TILE_SIZE = 128;
         public bool isWhite;
         public Texture2D pieceTexture;
+        public bool pieceIsSelected = false;
+        public bool hasMoved = false;
+        public List<BoardSquare> availableTiles = new List<BoardSquare>();
         
-        public ChessPiece(int x, int y, bool white, List<ChessPiece> pieceList)
+        public ChessPiece(int x, int y, bool white, Board board)
         {
-            this.xPos = x;
-            this.yPos = y;
+            board.boardArray[x, y].x = x;
+            board.boardArray[x, y].y = y;
             this.isWhite = white;
-            pieceList.Add(this);
+            board.boardArray[x, y].PieceOnSquare = this;
         }
-        
-        // Loads the correct texture for a piece
-        public void LoadPiece(ContentManager c, ChessPiece piece)
+
+        // Assigns the correct texture for a piece
+        public void PieceTextureAllocation(BoardSquare square ,Texture2D[] textureArray)
         {
-            if (piece is Rook == true)
+            if (square.PieceOnSquare is Rook == true)
             {
                 if (isWhite == true)
                 {
-                    pieceTexture = c.Load<Texture2D>("w_rook");
+                    pieceTexture = textureArray[4];
                 }
                 else
                 {
-                    pieceTexture = c.Load<Texture2D>("b_rook");
+                    pieceTexture = textureArray[5];
                 }
             }
-            if (piece is Bishop == true)
+            if (square.PieceOnSquare is Knight == true)
             {
                 if (isWhite == true)
                 {
-                    pieceTexture = c.Load<Texture2D>("w_bishop");
+                    pieceTexture = textureArray[6];
                 }
                 else
                 {
-                    pieceTexture = c.Load<Texture2D>("b_bishop");
+                    pieceTexture = textureArray[7];
                 }
             }
-            if (piece is Knight == true)
+            if (square.PieceOnSquare is Bishop == true)
             {
                 if (isWhite == true)
                 {
-                    pieceTexture = c.Load<Texture2D>("w_knight");
+                    pieceTexture = textureArray[8];
                 }
                 else
                 {
-                    pieceTexture = c.Load<Texture2D>("b_knight");
+                    pieceTexture = textureArray[9];
                 }
             }
-            if (piece is Queen == true)
+            if (square.PieceOnSquare is Queen == true)
             {
                 if (isWhite == true)
                 {
-                    pieceTexture = c.Load<Texture2D>("w_queen");
+                    pieceTexture = textureArray[10];
                 }
                 else
                 {
-                    pieceTexture = c.Load<Texture2D>("b_queen");
+                    pieceTexture = textureArray[11];
                 }
             }
-            if (piece is King == true)
+            if (square.PieceOnSquare is King == true)
             {
                 if (isWhite == true)
                 {
-                    pieceTexture = c.Load<Texture2D>("w_king");
+                    pieceTexture = textureArray[12];
                 }
                 else
                 {
-                    pieceTexture = c.Load<Texture2D>("b_king");
+                    pieceTexture = textureArray[13];
                 }
             }
-            if (piece is Pawn == true)
+            if (square.PieceOnSquare is Pawn == true)
             {
                 if (isWhite == true)
                 {
-                    pieceTexture = c.Load<Texture2D>("w_pawn");
+                    pieceTexture = textureArray[14];
                 }
                 else
                 {
-                    pieceTexture = c.Load<Texture2D>("b_pawn");
+                    pieceTexture = textureArray[15];
                 }
             }
+            
         }
 
         // Draws the piece
-        public void DrawPiece(SpriteBatch spriteBatch, ChessPiece piece)
+        public void DrawPiece(SpriteBatch spriteBatch, BoardSquare square)
         {
-            spriteBatch.Draw(piece.pieceTexture, new Rectangle(xPos * 128, yPos * 128, 128, 128), Color.White);
+            spriteBatch.Draw(square.PieceOnSquare.pieceTexture, new Rectangle(square.x* 128, square.y * 128, 128, 128), Color.White);
         }
+
+        public void DrawAvailableSquares(SpriteBatch spriteBatch, ContentManager c, BoardSquare square)
+        {
+            spriteBatch.Draw(c.Load<Texture2D>("select_circle"), new Rectangle( ((square.x * TILE_SIZE) + TILE_SIZE/10), ((square.y * TILE_SIZE) + TILE_SIZE/10) , TILE_SIZE*8/10, TILE_SIZE*8/10), Color.White*0.6f);
+        }
+
+        /*public void availableSquares(Board board)
+        {
+            if ()
+        }*/
+
     }
 
 
@@ -107,49 +121,90 @@ namespace Game1
   
     public class Rook : ChessPiece
     {
-        public Rook(int x, int y, bool white, List<ChessPiece> pieceList)
-            : base(x, y, white, pieceList)
+        public Rook(int x, int y, bool white, Board board)
+            : base(x, y, white, board)
         {
         }
+
     }
 
     public class Knight : ChessPiece
     {
-        public Knight(int x, int y, bool white, List<ChessPiece> pieceList)
-            : base(x, y, white, pieceList)
+        public Knight(int x, int y, bool white, Board board)
+            : base(x, y, white, board)
         {
         }
     }
 
     public class Bishop : ChessPiece
     {
-        public Bishop(int x, int y, bool white, List<ChessPiece> pieceList)
-            : base(x, y, white, pieceList)
+        public Bishop(int x, int y, bool white, Board board)
+            : base(x, y, white, board)
         {
         }
     }
 
     public class King : ChessPiece
     {
-        public King(int x, int y, bool white, List<ChessPiece> pieceList)
-            : base(x, y, white, pieceList)
+        public King(int x, int y, bool white, Board board)
+            : base(x, y, white, board)
         {
         }
     }
 
     public class Queen : ChessPiece
     {
-        public Queen(int x, int y, bool white, List<ChessPiece> pieceList)
-            : base(x, y, white, pieceList)
+        public Queen(int x, int y, bool white, Board board)
+            : base(x, y, white, board)
         {
         }
     }
 
     public class Pawn : ChessPiece
     {
-        public Pawn(int x, int y, bool white, List<ChessPiece> pieceList)
-            : base(x, y, white, pieceList)
+        public Pawn(int x, int y, bool white, Board board)
+            : base(x, y, white, board)
         {
         }
+
+        /* public void findAvailableTiles(BoardSquare[,] boardArray)
+        {
+            if (this.isWhite == true)
+            {
+                if (boardArray[this.pieceCoord.x, this.pieceCoord.y - 1].PieceOnTile == null)
+                {
+                    BoardCoord pawnAvailableSquare1 = new BoardCoord();
+                    this.availableTiles.Add(pawnAvailableSquare1);
+
+                    if (this.hasMoved == false)
+                    {
+                        if (boardArray[this.pieceCoord.x, this.pieceCoord.y - 2].PieceOnTile == null)
+                        {
+                            BoardCoord pawnAvailableSquare2 = new BoardCoord();
+                            this.availableTiles.Add(pawnAvailableSquare2);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (boardArray[this.pieceCoord.x, this.pieceCoord.y + 1] == 0)
+                {
+                    BoardCoord pawnAvailableSquare1 = new BoardCoord();
+                    this.availableTiles.Add(pawnAvailableSquare1);
+
+                    if (this.hasMoved == false)
+                    {
+                        if (boardArray[this.pieceCoord.x, this.pieceCoord.y + 2] == 0)
+                        {
+                            BoardCoord pawnAvailableSquare2 = new BoardCoord();
+                            this.availableTiles.Add(pawnAvailableSquare2);
+                        }
+                    }
+                }
+            }
+
+        } */
+
     }
 }

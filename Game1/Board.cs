@@ -7,89 +7,137 @@ using System.Collections.Generic;
 
 namespace Game1
 {
+
+    public class BoardSquare
+    {
+        public const int TILE_SIZE = 128;
+        public int x;
+        public int y;
+        public Texture2D squareTexture;
+        public ChessPiece PieceOnSquare;
+
+        public BoardSquare(int x, int y, bool theme, Texture2D[] textureArray)
+        {
+            this.x = x;
+            this.y = y;
+            if (theme == true)
+            {
+                if (((x + y) / 2) % 2 != 0)
+                {
+                    this.squareTexture = textureArray[0];
+                }
+                else
+                {
+                    squareTexture = textureArray[1];
+                }
+            }
+            else
+            {
+                if (((x + y) / 2) % 2 != 0)
+                {
+                    squareTexture = textureArray[2];
+                }
+                else
+                {
+                    squareTexture = textureArray[3];
+                }
+            }
+        }
+
+        public void SquareTextureAllocation(bool theme, Texture2D[] textureArray)
+        {
+            if (theme == true)
+            {
+                if ((x + y) % 2 == 0)
+                {
+                    squareTexture = textureArray[0];
+                }
+                else
+                {
+                    squareTexture = textureArray[1];
+                }
+            }
+            else
+            {
+                if ((x + y) % 2 == 0)
+                {
+                    squareTexture = textureArray[2];
+                }
+                else
+                {
+                    squareTexture = textureArray[3];
+                }
+            }
+        }
+
+        public void DrawBoardSquare(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(squareTexture, new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), Color.White);
+        }
+
+    }
+
+
+
     public class Board
     {
 
         private const int TILE_SIZE = 128;
 
-        private int[,] boardArray = new int[8, 8];
+        public BoardSquare[,] boardArray = new BoardSquare[8, 8];
+        public bool boardTheme = true;
 
-        private Texture2D boardTileLight;
-        private Texture2D boardTileDark;
-
-
-        //loads the light and dark board tile textures
-        public void LoadBoard(ContentManager c, bool theme)
+        public void BoardCreation(bool theme, Texture2D[] textureList)
         {
-            if (theme == true)
+            for (int i = 0; i < 8; i++ )
             {
-                this.boardTileLight = c.Load<Texture2D>("square_light");
-                this.boardTileDark = c.Load<Texture2D>("square_dark");
-            }
-            else
-            {
-                this.boardTileLight = c.Load<Texture2D>("square_brown_light");
-                this.boardTileDark = c.Load<Texture2D>("square_brown_dark");
-            }
-
-        }
-        
-        //draws the board from the light and dark board tile textures
-        public void DrawBoard(SpriteBatch spriteBatch)
-        {
-            for (int i = 0; i < this.boardArray.GetLength(0) ; i++ )
-            {
-                for (int j = 0; j < this.boardArray.GetLength(1) ; j++ )
+                for (int j = 0; j < 8; j++ )
                 {
-                    if ((i + j)%2 != 0 )
-                    {
-                        spriteBatch.Draw(boardTileDark, new Rectangle(i * TILE_SIZE, j * TILE_SIZE, 128, 128), Color.White);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(boardTileLight, new Rectangle(i * TILE_SIZE, j * TILE_SIZE, 128, 128), Color.White);
-                    }
+                    boardArray[i, j] = new BoardSquare(i, j, theme, textureList);
                 }
             }
         }
 
         //sets up currentPieces list with all new pieces for start of game and makes it white's turn
-        public void setupGame(List<ChessPiece> currentPieces)
+        public void setupNewGame(Board board)
         {
-            currentPieces.Clear();
+            foreach(BoardSquare square in board.boardArray)
+            {
+                square.PieceOnSquare = null;
+            }
 
-            Rook whiteRook1 = new Rook(0, 7, true, currentPieces);
-            Rook whiteRook2 = new Rook(7, 7, true, currentPieces);
-            Rook blackRook1 = new Rook(0, 0, false, currentPieces);
-            Rook blackRook2 = new Rook(7, 0, false, currentPieces);
-            Knight whiteKnight1 = new Knight(1, 7, true, currentPieces);
-            Knight whiteKnight2 = new Knight(6, 7, true, currentPieces);
-            Knight blackKnight1 = new Knight(1, 0, false, currentPieces);
-            Knight blackKnight2 = new Knight(6, 0, false, currentPieces);
-            Bishop whiteBishop1 = new Bishop(2, 7, true, currentPieces);
-            Bishop whiteBishop2 = new Bishop(5, 7, true, currentPieces);
-            Bishop blackBishop1 = new Bishop(2, 0, false, currentPieces);
-            Bishop blackBishop2 = new Bishop(5, 0, false, currentPieces);
-            Queen whiteQueen = new Queen(3, 7, true, currentPieces);
-            Queen blackQueen = new Queen(3, 0, false, currentPieces);
-            King whiteKing = new King(4, 7, true, currentPieces);
-            King blackKing = new King(4, 0, false, currentPieces);
-            Pawn whitePawn1 = new Pawn(0, 6, true, currentPieces);
-            Pawn whitePawn2 = new Pawn(1, 6, true, currentPieces);
-            Pawn whitePawn3 = new Pawn(2, 6, true, currentPieces);
-            Pawn whitePawn4 = new Pawn(3, 6, true, currentPieces);
-            Pawn whitePawn5 = new Pawn(4, 6, true, currentPieces);
-            Pawn whitePawn6 = new Pawn(5, 6, true, currentPieces);
-            Pawn whitePawn7 = new Pawn(6, 6, true, currentPieces);
-            Pawn whitePawn8 = new Pawn(7, 6, true, currentPieces);
-            Pawn blackPawn1 = new Pawn(0, 1, false, currentPieces);
-            Pawn blackPawn2 = new Pawn(1, 1, false, currentPieces);
-            Pawn blackPawn3 = new Pawn(2, 1, false, currentPieces);
-            Pawn blackPawn4 = new Pawn(3, 1, false, currentPieces);
-            Pawn blackPawn5 = new Pawn(4, 1, false, currentPieces);
-            Pawn blackPawn6 = new Pawn(5, 1, false, currentPieces);
-            Pawn blackPawn7 = new Pawn(6, 1, false, currentPieces);
-            Pawn blackPawn8 = new Pawn(7, 1, false, currentPieces);
+            Rook whiteRook1 = new Rook(0, 7, true, board);
+            Rook whiteRook2 = new Rook(7, 7, true, board);
+            Rook blackRook1 = new Rook(0, 0, false, board);
+            Rook blackRook2 = new Rook(7, 0, false, board);
+            Knight whiteKnight1 = new Knight(1, 7, true, board);
+            Knight whiteKnight2 = new Knight(6, 7, true, board);
+            Knight blackKnight1 = new Knight(1, 0, false, board);
+            Knight blackKnight2 = new Knight(6, 0, false, board);
+            Bishop whiteBishop1 = new Bishop(2, 7, true, board);
+            Bishop whiteBishop2 = new Bishop(5, 7, true, board);
+            Bishop blackBishop1 = new Bishop(2, 0, false, board);
+            Bishop blackBishop2 = new Bishop(5, 0, false, board);
+            Queen whiteQueen = new Queen(3, 7, true, board);
+            Queen blackQueen = new Queen(3, 0, false, board);
+            King whiteKing = new King(4, 7, true, board);
+            King blackKing = new King(4, 0, false, board);
+            Pawn whitePawn1 = new Pawn(0, 6, true, board);
+            Pawn whitePawn2 = new Pawn(1, 6, true, board);
+            Pawn whitePawn3 = new Pawn(2, 6, true, board);
+            Pawn whitePawn4 = new Pawn(3, 6, true, board);
+            Pawn whitePawn5 = new Pawn(4, 6, true, board);
+            Pawn whitePawn6 = new Pawn(5, 6, true, board);
+            Pawn whitePawn7 = new Pawn(6, 6, true, board);
+            Pawn whitePawn8 = new Pawn(7, 6, true, board);
+            Pawn blackPawn1 = new Pawn(0, 1, false, board);
+            Pawn blackPawn2 = new Pawn(1, 1, false, board);
+            Pawn blackPawn3 = new Pawn(2, 1, false, board);
+            Pawn blackPawn4 = new Pawn(3, 1, false, board);
+            Pawn blackPawn5 = new Pawn(4, 1, false, board);
+            Pawn blackPawn6 = new Pawn(5, 1, false, board);
+            Pawn blackPawn7 = new Pawn(6, 1, false, board);
+            Pawn blackPawn8 = new Pawn(7, 1, false, board);
 
             Game1.whitesTurn = true;
 

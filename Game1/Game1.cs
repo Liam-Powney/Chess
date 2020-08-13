@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace Game1
@@ -13,20 +14,18 @@ namespace Game1
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        public const int TILE_SIZE = 128;
+
+        private MouseState oldState;
 
         Board board = new Board();
         public static bool whitesTurn;
-        public static List<ChessPiece> currentPieces = new List<ChessPiece>();
-        //Board board = new Board();
         
-
-        
-
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -58,12 +57,41 @@ namespace Game1
             
             // TODO: use this.Content to load your game content here
 
-            //load board and create and load new pieces
-            board.LoadBoard(Content, true);
-            board.setupGame(currentPieces);
-            foreach(ChessPiece piece in currentPieces)
+            //Loads all textures into an Array
+            Texture2D[] textureArray = new Texture2D[16];
+            textureArray[0] = Content.Load<Texture2D>("square_light");
+            textureArray[1] = Content.Load<Texture2D>("square_dark");
+            textureArray[2] = Content.Load<Texture2D>("square_brown_light");
+            textureArray[3] = Content.Load<Texture2D>("square_brown_dark");
+            textureArray[4] = Content.Load<Texture2D>("w_rook");
+            textureArray[5] = Content.Load<Texture2D>("b_rook");
+            textureArray[6] = Content.Load<Texture2D>("w_knight");
+            textureArray[7] = Content.Load<Texture2D>("b_knight");
+            textureArray[8] = Content.Load<Texture2D>("w_bishop");
+            textureArray[9] = Content.Load<Texture2D>("b_bishop");
+            textureArray[10] = Content.Load<Texture2D>("w_queen");
+            textureArray[11] = Content.Load<Texture2D>("b_queen");
+            textureArray[12] = Content.Load<Texture2D>("w_king");
+            textureArray[13] = Content.Load<Texture2D>("b_king");
+            textureArray[14] = Content.Load<Texture2D>("w_pawn");
+            textureArray[15] = Content.Load<Texture2D>("b_pawn");
+
+            
+            board.BoardCreation(board.boardTheme, textureArray);
+
+            foreach(BoardSquare square in board.boardArray)
             {
-                piece.LoadPiece(Content, piece);
+                square.SquareTextureAllocation(true, textureArray);
+            }
+
+            board.setupNewGame(board);
+
+            foreach(BoardSquare square in board.boardArray)
+            {
+                if (square.PieceOnSquare != null)
+                {
+                    square.PieceOnSquare.PieceTextureAllocation(square, textureArray);
+                }
             }
 
 
@@ -89,8 +117,26 @@ namespace Game1
                 Exit();
 
             // TODO: Add your update logic here
+            MouseState newState = Mouse.GetState();
+            if (newState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released)
+            {
+                foreach(BoardSquare square in board.boardArray)
+                {
+                    if (square.PieceOnSquare != null)
+                    {
+                        if (square.PieceOnSquare.pieceIsSelected == true)
+                        {
+                            square.PieceOnSquare.pieceIsSelected = false;
+                        }
+                        if (square.x == newState.X / TILE_SIZE && square.y == newState.Y / TILE_SIZE && square.PieceOnSquare.isWhite == whitesTurn)
+                        {
+                            square.PieceOnSquare.pieceIsSelected = true;
+                        }
+                    }
+                }
+            }
 
-
+            oldState = newState; // this reassigns the old state so that it is ready for next time
 
 
 
@@ -110,10 +156,17 @@ namespace Game1
             spriteBatch.Begin();
 
             //draw board and pieces
-            board.DrawBoard(spriteBatch);
-            foreach(ChessPiece piece in currentPieces)
+            foreach(BoardSquare square in board.boardArray)
             {
-                piece.DrawPiece(spriteBatch, piece);
+                square.DrawBoardSquare(spriteBatch);
+                if (square.PieceOnSquare != null)
+                {
+                    square.PieceOnSquare.DrawPiece(spriteBatch, square);
+                    if (square.PieceOnSquare.pieceIsSelected == true)
+                    {
+                        square.PieceOnSquare.DrawAvailableSquares(spriteBatch, Content, square);
+                    }
+                }
             }
 
             spriteBatch.End();

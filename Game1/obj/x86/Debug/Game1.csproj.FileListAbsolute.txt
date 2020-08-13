@@ -59,3 +59,4 @@ C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\obj\x8
 C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\Content\square_ brown_dark.xnb
 C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\Content\square_brown_light.xnb
 C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\Content\square_brown_dark.xnb
+C:\Users\powne\OneDrive\Documents\Visual Studio 2013\Projects\Chess\Game1\bin\Windows\x86\Debug\Content\select_circle.xnb
