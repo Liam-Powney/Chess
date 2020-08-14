@@ -11,23 +11,29 @@ namespace Game1
     {
         public const int TILE_SIZE = 128;
         public bool isWhite;
+        public int xCoord;
+        public int yCoord;
         public Texture2D pieceTexture;
-        public bool pieceIsSelected = false;
         public bool hasMoved = false;
+        public bool isSelected = false;
+        public BoardSquare CurrentSquare;
         public List<BoardSquare> availableTiles = new List<BoardSquare>();
         
-        public ChessPiece(int x, int y, bool white, Board board)
+        public ChessPiece(int x, int y, bool white, Board board, List<ChessPiece> currentPieces)
         {
-            board.boardArray[x, y].x = x;
-            board.boardArray[x, y].y = y;
+            board.boardArray[x, y].x = this.xCoord = x;
+            board.boardArray[x, y].y = this.yCoord = y;
+            board.boardArray[x, y].pieceOnSquare = this;
+            board.currentPieces.Add(this);
             this.isWhite = white;
-            board.boardArray[x, y].PieceOnSquare = this;
+            CurrentSquare = board.boardArray[x, y];
+            currentPieces.Add(this);
         }
 
         // Assigns the correct texture for a piece
-        public void PieceTextureAllocation(BoardSquare square ,Texture2D[] textureArray)
+        public void PieceTextureAllocation(Texture2D[] textureArray)
         {
-            if (square.PieceOnSquare is Rook == true)
+            if (this is Rook == true)
             {
                 if (isWhite == true)
                 {
@@ -38,7 +44,7 @@ namespace Game1
                     pieceTexture = textureArray[5];
                 }
             }
-            if (square.PieceOnSquare is Knight == true)
+            if (this is Knight == true)
             {
                 if (isWhite == true)
                 {
@@ -49,7 +55,7 @@ namespace Game1
                     pieceTexture = textureArray[7];
                 }
             }
-            if (square.PieceOnSquare is Bishop == true)
+            if (this is Bishop == true)
             {
                 if (isWhite == true)
                 {
@@ -60,7 +66,7 @@ namespace Game1
                     pieceTexture = textureArray[9];
                 }
             }
-            if (square.PieceOnSquare is Queen == true)
+            if (this is Queen == true)
             {
                 if (isWhite == true)
                 {
@@ -71,7 +77,7 @@ namespace Game1
                     pieceTexture = textureArray[11];
                 }
             }
-            if (square.PieceOnSquare is King == true)
+            if (this is King == true)
             {
                 if (isWhite == true)
                 {
@@ -82,7 +88,7 @@ namespace Game1
                     pieceTexture = textureArray[13];
                 }
             }
-            if (square.PieceOnSquare is Pawn == true)
+            if (this is Pawn == true)
             {
                 if (isWhite == true)
                 {
@@ -97,21 +103,55 @@ namespace Game1
         }
 
         // Draws the piece
-        public void DrawPiece(SpriteBatch spriteBatch, BoardSquare square)
+        public void DrawPiece(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(square.PieceOnSquare.pieceTexture, new Rectangle(square.x* 128, square.y * 128, 128, 128), Color.White);
+            spriteBatch.Draw(this.pieceTexture, new Rectangle(this.xCoord* 128, this.yCoord * 128, 128, 128), Color.White);
         }
 
-        public void DrawAvailableSquares(SpriteBatch spriteBatch, ContentManager c, BoardSquare square)
+
+        //Finds Available Moves for a Selected Piece
+        public List<BoardSquare> availableMoves(Board board)
         {
-            spriteBatch.Draw(c.Load<Texture2D>("select_circle"), new Rectangle( ((square.x * TILE_SIZE) + TILE_SIZE/10), ((square.y * TILE_SIZE) + TILE_SIZE/10) , TILE_SIZE*8/10, TILE_SIZE*8/10), Color.White*0.6f);
+            List<BoardSquare> availableMoves = new List<BoardSquare>();
+            if (this != null)
+            {
+                if (this is Pawn == true)
+                {
+                    if (this.isWhite == true)
+                    {
+                        if (board.boardArray[this.xCoord,this.yCoord].pieceOnSquare == null)
+                        {
+                            availableMoves.Add(board.boardArray[this.xCoord, this.yCoord - 1]);
+                        }
+                        if (this.hasMoved == false)
+                        {
+                            if (board.boardArray[this.xCoord, this.yCoord - 2].pieceOnSquare == null)
+                            {
+                                availableMoves.Add(board.boardArray[this.xCoord, this.yCoord - 2]);
+                            }
+                        }
+                        else {  }
+                    }
+                    else
+                    {
+                        if (board.boardArray[this.xCoord, this.yCoord + 1].pieceOnSquare != null)
+                        {
+                            availableMoves.Add(board.boardArray[this.xCoord, this.yCoord - 1]);
+                        }
+                        else { }
+                        if (this.hasMoved == false)
+                        {
+                            if (board.boardArray[this.xCoord, this.yCoord + 2].pieceOnSquare != null)
+                            {
+                                availableMoves.Add(board.boardArray[this.xCoord, this.yCoord - 2]);
+                            }
+                            else { }
+                        }
+                    }
+                }
+            }
+            return availableMoves;
         }
-
-        /*public void availableSquares(Board board)
-        {
-            if ()
-        }*/
-
     }
 
 
@@ -121,8 +161,8 @@ namespace Game1
   
     public class Rook : ChessPiece
     {
-        public Rook(int x, int y, bool white, Board board)
-            : base(x, y, white, board)
+        public Rook(int x, int y, bool white, Board board, List<ChessPiece> currentPieces)
+            : base(x, y, white, board, currentPieces)
         {
         }
 
@@ -130,81 +170,42 @@ namespace Game1
 
     public class Knight : ChessPiece
     {
-        public Knight(int x, int y, bool white, Board board)
-            : base(x, y, white, board)
+        public Knight(int x, int y, bool white, Board board, List<ChessPiece> currentPieces)
+            : base(x, y, white, board, currentPieces)
         {
         }
     }
 
     public class Bishop : ChessPiece
     {
-        public Bishop(int x, int y, bool white, Board board)
-            : base(x, y, white, board)
+        public Bishop(int x, int y, bool white, Board board, List<ChessPiece> currentPieces)
+            : base(x, y, white, board, currentPieces)
         {
         }
     }
 
     public class King : ChessPiece
     {
-        public King(int x, int y, bool white, Board board)
-            : base(x, y, white, board)
+        public King(int x, int y, bool white, Board board, List<ChessPiece> currentPieces)
+            : base(x, y, white, board, currentPieces)
         {
         }
     }
 
     public class Queen : ChessPiece
     {
-        public Queen(int x, int y, bool white, Board board)
-            : base(x, y, white, board)
+        public Queen(int x, int y, bool white, Board board, List<ChessPiece> currentPieces)
+            : base(x, y, white, board, currentPieces)
         {
         }
     }
 
     public class Pawn : ChessPiece
     {
-        public Pawn(int x, int y, bool white, Board board)
-            : base(x, y, white, board)
+        public Pawn(int x, int y, bool white, Board board, List<ChessPiece> currentPieces)
+            : base(x, y, white, board, currentPieces)
         {
         }
-
-        /* public void findAvailableTiles(BoardSquare[,] boardArray)
-        {
-            if (this.isWhite == true)
-            {
-                if (boardArray[this.pieceCoord.x, this.pieceCoord.y - 1].PieceOnTile == null)
-                {
-                    BoardCoord pawnAvailableSquare1 = new BoardCoord();
-                    this.availableTiles.Add(pawnAvailableSquare1);
-
-                    if (this.hasMoved == false)
-                    {
-                        if (boardArray[this.pieceCoord.x, this.pieceCoord.y - 2].PieceOnTile == null)
-                        {
-                            BoardCoord pawnAvailableSquare2 = new BoardCoord();
-                            this.availableTiles.Add(pawnAvailableSquare2);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (boardArray[this.pieceCoord.x, this.pieceCoord.y + 1] == 0)
-                {
-                    BoardCoord pawnAvailableSquare1 = new BoardCoord();
-                    this.availableTiles.Add(pawnAvailableSquare1);
-
-                    if (this.hasMoved == false)
-                    {
-                        if (boardArray[this.pieceCoord.x, this.pieceCoord.y + 2] == 0)
-                        {
-                            BoardCoord pawnAvailableSquare2 = new BoardCoord();
-                            this.availableTiles.Add(pawnAvailableSquare2);
-                        }
-                    }
-                }
-            }
-
-        } */
 
     }
 }

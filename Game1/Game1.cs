@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -19,8 +20,12 @@ namespace Game1
         private MouseState oldState;
 
         Board board = new Board();
+        List<BoardSquare> availableMoves = new List<BoardSquare>();
+        List<ChessPiece> currentPieces = new List<ChessPiece>();
+
         public static bool whitesTurn;
-        
+        public static ChessPiece currentlySelectedPiece;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -79,19 +84,10 @@ namespace Game1
             
             board.BoardCreation(board.boardTheme, textureArray);
 
-            foreach(BoardSquare square in board.boardArray)
+            board.setupNewGame(board, currentPieces);
+            foreach(ChessPiece piece in currentPieces)
             {
-                square.SquareTextureAllocation(true, textureArray);
-            }
-
-            board.setupNewGame(board);
-
-            foreach(BoardSquare square in board.boardArray)
-            {
-                if (square.PieceOnSquare != null)
-                {
-                    square.PieceOnSquare.PieceTextureAllocation(square, textureArray);
-                }
+                piece.PieceTextureAllocation(textureArray);
             }
 
 
@@ -120,21 +116,21 @@ namespace Game1
             MouseState newState = Mouse.GetState();
             if (newState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released)
             {
-                foreach(BoardSquare square in board.boardArray)
+                int xBoardCoordofClick = newState.X / TILE_SIZE;
+                int yBoardCoordofClick = newState.Y / TILE_SIZE;
+
+                if (currentlySelectedPiece == null)
                 {
-                    if (square.PieceOnSquare != null)
-                    {
-                        if (square.PieceOnSquare.pieceIsSelected == true)
-                        {
-                            square.PieceOnSquare.pieceIsSelected = false;
-                        }
-                        if (square.x == newState.X / TILE_SIZE && square.y == newState.Y / TILE_SIZE && square.PieceOnSquare.isWhite == whitesTurn)
-                        {
-                            square.PieceOnSquare.pieceIsSelected = true;
-                        }
-                    }
+                    board.selectPiece(xBoardCoordofClick, yBoardCoordofClick, board, availableMoves, currentPieces);
                 }
-            }
+                else
+                {
+                    board.useSelectedPiece(xBoardCoordofClick, yBoardCoordofClick, board, availableMoves, currentlySelectedPiece);
+                }
+                
+
+            }   
+             
 
             oldState = newState; // this reassigns the old state so that it is ready for next time
 
@@ -159,15 +155,14 @@ namespace Game1
             foreach(BoardSquare square in board.boardArray)
             {
                 square.DrawBoardSquare(spriteBatch);
-                if (square.PieceOnSquare != null)
-                {
-                    square.PieceOnSquare.DrawPiece(spriteBatch, square);
-                    if (square.PieceOnSquare.pieceIsSelected == true)
-                    {
-                        square.PieceOnSquare.DrawAvailableSquares(spriteBatch, Content, square);
-                    }
-                }
             }
+            foreach(ChessPiece piece in currentPieces)
+            {
+                piece.DrawPiece(spriteBatch);
+            }
+
+            DrawLibrary.DrawAvailableSquares(spriteBatch, Content, availableMoves);
+            
 
             spriteBatch.End();
 
